@@ -44,6 +44,14 @@ class ArticleFetchService
         return $response->successful() ? $response->json()['articles'] : [];
     }
 
+    public function fetchArticlesFromnewYorkArticles()
+    {
+        $response = Http::get('https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json', [
+        'api-key' => env('NY_API_KEY'),
+    ]);
+        return $response->successful() ? $response->json()['results'] : [];
+    }
+
     private function getArticleDataBySource($article, $source)
     {
         $articles = array_slice($article, 0, 3);
@@ -76,16 +84,16 @@ class ArticleFetchService
                     'category_id' => $category,
                 ];
 
-            case 'opennews':
-                // You can add similar handling for OpenNews here
-                return [
-                    'title' => $article['title'],
-                    'description' => $article['description'] ?? 'No description available',
-                    'author' => $article['author'] ?? 'Unknown',
-                    'published_at' => $article['publishedAt'] ?? now(),
-                    'source' => $article['source']['name'] ?? 'Unknown',
-                    'category_id' => $category,
-                ];
+            case 'NY Times':
+                    return [
+                        'title' => $article['title'],
+                        'description' => $article['abstract'] ?? 'No description available',
+                        'content' => $article['adx_keywords'] ?? 'No content available',
+                        'author' => $article['byline'] ?? 'Unknown',
+                        'published_at' => $article['published_date'] ?? now(),
+                        'source' => $article['source'] ?? 'Unknown',
+                        'category_id' => $category,
+                    ];
 
             default:
                 return [];

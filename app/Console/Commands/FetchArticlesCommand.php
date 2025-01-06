@@ -44,9 +44,9 @@ class FetchArticlesCommand extends Command
         $guardianArticles = $this->articleFetchService->fetchFromGuardian();
         $this->articleFetchService->saveArticlesToDatabase($guardianArticles, 'The Guardian');
 
-        // $this->info('Fetching articles from OpenNews...');
-        // $openNewsArticles = $this->articleFetchService->fetchFromOpenNews();
-        // $this->articleFetchService->saveArticlesToDatabase($openNewsArticles, 'OpenNews');
+        $this->info('Fetching articles from New York Times...');
+        $openNewsArticles = $this->articleFetchService->fetchArticlesFromnewYorkArticles();
+        $this->articleFetchService->saveArticlesToDatabase($openNewsArticles, 'NY Times');
         $this->info('Articles fetching completed.');
     }
 

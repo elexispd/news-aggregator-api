@@ -85,20 +85,20 @@ class ArticleController extends Controller
         $createdArticlesCount = 0;
 
         // Fetch from NewsAPI
-        $newsApiArticles = $this->fetchArticlesFromNewsAPI();
-        $createdArticlesCount += $this->saveArticlesToDatabase($newsApiArticles, 'Newsapi');
+        // $newsApiArticles = $this->fetchArticlesFromNewsAPI();
+        // $createdArticlesCount += $this->saveArticlesToDatabase($newsApiArticles, 'Newsapi');
 
-        // // Fetch from OpenNews
-        // $openNewsArticles = $this->fetchArticlesFromOpenNews();
-        // $createdArticlesCount += $this->saveArticlesToDatabase($openNewsArticles);
+         // Fetch from New Your Times
+        $newYorkArticles = $this->fetchArticlesFromnewYorkArticles();
+        $createdArticlesCount += $this->saveArticlesToDatabase($newYorkArticles, 'NY Times');
 
         // // Fetch from The Guardian
-        $theGuardianArticles = $this->fetchArticlesFromGuardian();
-        $createdArticlesCount += $this->saveArticlesToDatabase($theGuardianArticles, 'The Guardian');
+        // $theGuardianArticles = $this->fetchArticlesFromGuardian();
+        // $createdArticlesCount += $this->saveArticlesToDatabase($theGuardianArticles, 'The Guardian');
 
         return response()->json([
             'message' => 'Articles fetched and saved successfully.',
-            'articles_created' => $createdArticlesCount,
+            'articles_created' =>$createdArticlesCount,
         ], 200);
     }
 
@@ -123,6 +123,16 @@ class ArticleController extends Controller
 
     //     return $response->successful() ? $response->json()['articles'] : [];
     // }
+
+    // Fetch articles from The Guardian
+    // private function fetchArticlesFromnewYorkArticles()
+    // {
+    //     $response = Http::get('https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json', [
+    //     'api-key' => env('NY_API_KEY'),
+    // ]);
+    //     return $response->successful() ? $response->json()['results'] : [];
+    // }
+
 
     // // Fetch articles from The Guardian
     // private function fetchArticlesFromGuardian()
@@ -172,7 +182,12 @@ class ArticleController extends Controller
     // private function getArticleDataBySource($article, $source)
     // {
     //     $articles = array_slice($article, 0, 3);
-    //     $category = Categories::firstOrCreate(['name' => 'General'])->id;
+    //     $category = Categories::inRandomOrder()->first();
+    //     if($category) {
+    //         $category = $category->id;
+    //     } else {
+    //         $category = Categories::firstOrCreate(['name' => 'General'])->id;
+    //     }
     //     switch ($source) {
     //         case 'Newsapi':
     //             return [
@@ -196,14 +211,14 @@ class ArticleController extends Controller
     //                 'category_id' => $category,
     //             ];
 
-    //         case 'opennews':
-    //             // You can add similar handling for OpenNews here
+    //         case 'NY Times':
     //             return [
     //                 'title' => $article['title'],
-    //                 'description' => $article['description'] ?? 'No description available',
-    //                 'author' => $article['author'] ?? 'Unknown',
-    //                 'published_at' => $article['publishedAt'] ?? now(),
-    //                 'source' => $article['source']['name'] ?? 'Unknown',
+    //                 'description' => $article['abstract'] ?? 'No description available',
+    //                 'content' => $article['adx_keywords'] ?? 'No content available',
+    //                 'author' => $article['byline'] ?? 'Unknown',
+    //                 'published_at' => $article['published_date'] ?? now(),
+    //                 'source' => $article['source'] ?? 'Unknown',
     //                 'category_id' => $category,
     //             ];
 
