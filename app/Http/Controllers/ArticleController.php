@@ -103,172 +103,115 @@ class ArticleController extends Controller
     }
 
     // Fetch articles from NewsAPI
-    private function fetchArticlesFromNewsAPI()
-    {
-        $response = Http::get('https://newsapi.org/v2/top-headlines', [
-            'apiKey' => env('NEWS_API_KEY'),
-            'country' => 'us',
-        ]);
+    // private function fetchArticlesFromNewsAPI()
+    // {
+    //     $response = Http::get('https://newsapi.org/v2/top-headlines', [
+    //         'apiKey' => env('NEWS_API_KEY'),
+    //         'country' => 'us',
+    //     ]);
 
-        return $response->successful() ? $response->json()['articles'] : [];
-    }
+    //     return $response->successful() ? $response->json()['articles'] : [];
+    // }
 
-    // Fetch articles from OpenNews
-    private function fetchArticlesFromOpenNews()
-    {
-        $response = Http::get('https://api.opennews.com/articles', [
-            'apiKey' => env('OPENNEWS_API_KEY'),
-            'country' => 'us',
-        ]);
+    // // Fetch articles from OpenNews
+    // private function fetchArticlesFromOpenNews()
+    // {
+    //     $response = Http::get('https://api.opennews.com/articles', [
+    //         'apiKey' => env('OPENNEWS_API_KEY'),
+    //         'country' => 'us',
+    //     ]);
 
-        return $response->successful() ? $response->json()['articles'] : [];
-    }
+    //     return $response->successful() ? $response->json()['articles'] : [];
+    // }
 
-    // Fetch articles from The Guardian
-    private function fetchArticlesFromGuardian()
-    {
-        $response = Http::get('https://content.guardianapis.com/search', [
-            'api-key' => env('THE_GUARDIAN_API_KEY'),
-            'order-by' => 'newest',
-            'page-size' => 3,
-        ]);
+    // // Fetch articles from The Guardian
+    // private function fetchArticlesFromGuardian()
+    // {
+    //     $response = Http::get('https://content.guardianapis.com/search', [
+    //         'api-key' => env('THE_GUARDIAN_API_KEY'),
+    //         'order-by' => 'newest',
+    //         'page-size' => 3,
+    //     ]);
 
-        return $response->successful() ? $response->json()['response']['results'] : [];
-    }
+    //     return $response->successful() ? $response->json()['response']['results'] : [];
+    // }
 
-    private function saveArticlesToDatabase2($articles, $source)
-    {
-        $articles = array_slice($articles, 0, 3);
-        $createdArticlesCount = 0;
 
-        foreach ($articles as $article) {
-            $category = Categories::firstOrCreate(['name' => 'General']);
+    // private function saveArticlesToDatabase($articles, $sourceName)
+    // {
+    //     $articles = array_slice($articles, 0, 3); // Limit to the first 3 articles
+    //     $createdArticlesCount = 0;
 
-            // Extract article data depending on the source
-            $articleData = $this->getArticleDataBySource($article, $source);
+    //     // Find the source by its name
+    //     $source = Source::where('name', $sourceName)->first();
 
-            // Create article record
-            Article::create($articleData);
+    //     if (!$source) {
+    //         throw new Exception("Source '{$sourceName}' not found.");
+    //     }
 
-            $createdArticlesCount++;
-        }
+    //     foreach ($articles as $article) {
+    //         $category = Categories::firstOrCreate(['name' => 'General']); // Ensure a default category
 
-        return $createdArticlesCount;
-    }
+    //         // Extract article data depending on the source
+    //         $articleData = $this->getArticleDataBySource($article, $sourceName);
 
-    private function saveArticlesToDatabase($articles, $sourceName)
-    {
-        $articles = array_slice($articles, 0, 3); // Limit to the first 3 articles
-        $createdArticlesCount = 0;
+    //         // Add the source_id to the article data
+    //         $articleData['source_id'] = $source->id;
 
-        // Find the source by its name
-        $source = Source::where('name', $sourceName)->first();
+    //         // Create article record
+    //         Article::create($articleData);
 
-        if (!$source) {
-            throw new Exception("Source '{$sourceName}' not found.");
-        }
+    //         $createdArticlesCount++;
+    //     }
 
-        foreach ($articles as $article) {
-            $category = Categories::firstOrCreate(['name' => 'General']); // Ensure a default category
-
-            // Extract article data depending on the source
-            $articleData = $this->getArticleDataBySource($article, $sourceName);
-
-            // Add the source_id to the article data
-            $articleData['source_id'] = $source->id;
-
-            // Create article record
-            Article::create($articleData);
-
-            $createdArticlesCount++;
-        }
-
-        return $createdArticlesCount;
-    }
+    //     return $createdArticlesCount;
+    // }
 
 
 
-    private function getArticleDataBySource($article, $source)
-    {
-        $articles = array_slice($article, 0, 3);
-        $category = Categories::firstOrCreate(['name' => 'General'])->id;
-        switch ($source) {
-            case 'Newsapi':
-                return [
-                    'title' => $article['title'],
-                    'description' => $article['description'] ?? 'No description available',
-                    'content' => $article['content'] ?? 'No content available',
-                    'author' => $article['author'] ?? 'Unknown',
-                    'published_at' => $article['publishedAt'] ?? now(),
-                    'source' => $article['source']['name'] ?? 'Unknown',
-                    'category_id' => $category,
-                ];
+    // private function getArticleDataBySource($article, $source)
+    // {
+    //     $articles = array_slice($article, 0, 3);
+    //     $category = Categories::firstOrCreate(['name' => 'General'])->id;
+    //     switch ($source) {
+    //         case 'Newsapi':
+    //             return [
+    //                 'title' => $article['title'],
+    //                 'description' => $article['description'] ?? 'No description available',
+    //                 'content' => $article['content'] ?? 'No content available',
+    //                 'author' => $article['author'] ?? 'Unknown',
+    //                 'published_at' => $article['publishedAt'] ?? now(),
+    //                 'source' => $article['source']['name'] ?? 'Unknown',
+    //                 'category_id' => $category,
+    //             ];
 
-            case 'The Guardian':
-                return [
-                    'title' => $article['webTitle'],
-                    'description' => $article['fields']['bodyText'] ?? 'No description available',
-                    'content' => $article['fields']['bodyText'] ?? 'No content available', // Add content (bodyText)
-                    'author' => $article['byline'] ?? 'Unknown',
-                    'published_at' => $article['webPublicationDate'] ?? now(),
-                    'source' => $article['tags'][0]['webTitle'] ?? 'Unknown',
-                    'category_id' => $category,
-                ];
+    //         case 'The Guardian':
+    //             return [
+    //                 'title' => $article['webTitle'],
+    //                 'description' => $article['fields']['bodyText'] ?? 'No description available',
+    //                 'content' => $article['fields']['bodyText'] ?? 'No content available', // Add content (bodyText)
+    //                 'author' => $article['byline'] ?? 'Unknown',
+    //                 'published_at' => $article['webPublicationDate'] ?? now(),
+    //                 'source' => $article['tags'][0]['webTitle'] ?? 'Unknown',
+    //                 'category_id' => $category,
+    //             ];
 
-            case 'opennews':
-                // You can add similar handling for OpenNews here
-                return [
-                    'title' => $article['title'],
-                    'description' => $article['description'] ?? 'No description available',
-                    'author' => $article['author'] ?? 'Unknown',
-                    'published_at' => $article['publishedAt'] ?? now(),
-                    'source' => $article['source']['name'] ?? 'Unknown',
-                    'category_id' => $category,
-                ];
+    //         case 'opennews':
+    //             // You can add similar handling for OpenNews here
+    //             return [
+    //                 'title' => $article['title'],
+    //                 'description' => $article['description'] ?? 'No description available',
+    //                 'author' => $article['author'] ?? 'Unknown',
+    //                 'published_at' => $article['publishedAt'] ?? now(),
+    //                 'source' => $article['source']['name'] ?? 'Unknown',
+    //                 'category_id' => $category,
+    //             ];
 
-            default:
-                return [];
-        }
-    }
+    //         default:
+    //             return [];
+    //     }
+    // }
 
-    public function fetchArticlesFromAPI2()
-    {
-        $response = Http::get('https://newsapi.org/v2/top-headlines', [
-            'apiKey' => env('NEWS_API_KEY'),
-            'country' => 'us',
-        ]);
-        if ($response->successful()) {
-            $articles = $response->json()['articles'];
-
-            $articles = array_slice($articles, 0, 3);
-
-            $createdArticlesCount = 0;
-            foreach ($articles as $article) {
-                $category = Categories::firstOrCreate(['name' => 'General']);
-
-                // Create article record
-                Article::create([
-                    'title' => $article['title'],
-                    'description' => $article['description'],
-                    'content' => $article['content'],
-                    'author' => $article['author'],
-                    'published_at' => $article['publishedAt'],
-                    'source' => $article['source']['name'],
-                    'category_id' => $category->id,
-                ]);
-                $createdArticlesCount++;
-            }
-            return response()->json([
-                'message' => 'Articles fetched and saved successfully.',
-                'articles_created' => $createdArticlesCount,
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Failed to fetch articles from the API.',
-                'error' => $response->json(),
-            ], $response->status());
-        }
-    }
 
 
 
