@@ -6,17 +6,21 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use App\Traits\HttpResponses;
 
 
 
 
 class UserPreferenceController extends Controller
 {
+    use HttpResponses;
+
     public function index()
     {
         $preferences = auth()->user()->preferences;
 
-        return response()->json($preferences, 200);
+        // return response()->json($preferences, 200);
+        return $this->successResponse($preferences, 'Articles Retrived');
     }
 
     public function store(Request $request)
@@ -36,7 +40,7 @@ class UserPreferenceController extends Controller
         ]
     );
 
-    return response()->json($preferences, 200);
+    return $this->successResponse($preferences, 'preferences Output');
     }
 
 
