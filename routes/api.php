@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/articles/{article}', [ArticleController::class, 'show']);
     Route::get('/articles/search', [ArticleController::class, 'search']);
 
-    Route::get('/fetchArticle', [ArticleController::class, 'fetchArticlesFromAPI']);
+    Route::get('/fetchArticle', [ArticleController::class, 'fetchArticlesFromAPI'])->middleware('throttle:30,1');;
 
     Route::get('/preferences', [UserPreferenceController::class, 'index']);
     Route::post('/preferences', [UserPreferenceController::class, 'store']);
