@@ -15,38 +15,125 @@ class UserPreferenceController extends Controller
 {
     use HttpResponses;
 
+    /**
+     * @OA\Get(
+     *     path="/api/preferences",
+     *     tags={"User Preferences"},
+     *     summary="Get user preferences",
+     *     description="Retrieve the preferences of the authenticated user",
+     *     operationId="Preference-index",
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of user preferences",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="categories", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="sources", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="authors", type="array", items=@OA\Items(type="string"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function index()
     {
         $preferences = auth()->user()->preferences;
-
-        // return response()->json($preferences, 200);
         return $this->successResponse($preferences, 'Articles Retrived');
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/preferences",
+     *     tags={"User Preferences"},
+     *     summary="Store or update user preferences",
+     *     description="Store or update the preferences for the authenticated user",
+     *     operationId="preferencestore",
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="categories", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="sources", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="authors", type="array", items=@OA\Items(type="string"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully updated preferences",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="categories", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="sources", type="array", items=@OA\Items(type="string")),
+     *             @OA\Property(property="authors", type="array", items=@OA\Items(type="string"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'categories' => 'array',
-        'sources' => 'array',
-        'authors' => 'array',
-    ]);
+    {
+        $validated = $request->validate([
+            'categories' => 'array',
+            'sources' => 'array',
+            'authors' => 'array',
+        ]);
 
-    $preferences = auth()->user()->preferences()->updateOrCreate(
-        ['user_id' => auth()->id()],
-        [
-            'categories' => $validated['categories'],
-            'sources' => $validated['sources'],
-            'authors' => $validated['authors'],
-        ]
-    );
+        $preferences = auth()->user()->preferences()->updateOrCreate(
+            ['user_id' => auth()->id()],
+            [
+                'categories' => $validated['categories'],
+                'sources' => $validated['sources'],
+                'authors' => $validated['authors'],
+            ]
+        );
 
-    return $this->successResponse($preferences, 'preferences Output');
+        return $this->successResponse($preferences, 'preferences Output');
     }
 
 
-
-
-
+    /**
+     * @OA\Get(
+     *     path="/api/personalized-feed",
+     *     tags={"User Preferences"},
+     *     summary="Get personalized feed based on user preferences",
+     *     description="Retrieve a personalized feed of articles based on the user's preferences",
+     *     operationId="personalizedFeed",
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of personalized feed",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer"),
+     *             @OA\Property(property="per_page", type="integer"),
+     *             @OA\Property(property="total", type="integer"),
+     *             @OA\Property(property="last_page", type="integer"),
+     *             @OA\Property(property="data", type="array", items=@OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No preferences set"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function personalizedFeed()
     {
         // Get the user's preferences
