@@ -17,7 +17,7 @@ class UserPreferenceController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/preferences",
+     *     path="/api/v1/preferences",
      *     tags={"User Preferences"},
      *     summary="Get user preferences",
      *     description="Retrieve the preferences of the authenticated user",
@@ -42,7 +42,7 @@ class UserPreferenceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/preferences",
+     *     path="/api/v1/preferences",
      *     tags={"User Preferences"},
      *     summary="Store or update user preferences",
      *     description="Store or update the preferences for the authenticated user",
@@ -100,7 +100,7 @@ class UserPreferenceController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/personalized-feed",
+     *     path="/api/v1/personalized-feed",
      *     tags={"User Preferences"},
      *     summary="Get personalized feed based on user preferences",
      *     description="Retrieve a personalized feed of articles based on the user's preferences",

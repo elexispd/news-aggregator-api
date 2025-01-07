@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
      /**
       * @OA\Get(
-      *     path="/api/articles",
+      *     path="/api/v1/articles",
       *     tags={"Articles"},
       *     summary="Retrieve a list of articles",
       *     security={ {"sanctum": {} }},
@@ -72,7 +72,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
     /**
      * @OA\Get(
-     *     path="/api/articles/{article}",
+     *     path="/api/v1/articles/{article}",
      *     tags={"Articles"},
      *     security={ {"sanctum": {} }},
      *     summary="Retrieve a single article",
@@ -108,7 +108,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
     /**
      * @OA\GET(
-     *     path="/api/articles/search",
+     *     path="/api/v1/articles/search",
      *     tags={"Articles"},
      *     security={ {"sanctum": {} }},
      *     summary="Search for articles",

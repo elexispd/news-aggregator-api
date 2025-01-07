@@ -20,7 +20,7 @@ class AuthController extends Controller
 
     /**
  * @OA\Post(
- *     path="/api/auth/register",
+ *     path="/api/v1/auth/register",
  *     tags={"Authentication"},
  *     summary="Register a new user",
  *     description="Register a new user and generate an authentication token",
@@ -78,7 +78,7 @@ class AuthController extends Controller
 
      /**
      * @OA\Post(
-     *     path="/api/auth/login",
+     *     path="/api/v1/auth/login",
      *     tags={"Authentication"},
      *     summary="Log in an existing user",
      *     description="Authenticate user and generate a token",
@@ -130,7 +130,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/auth/reset-password",
+     *     path="/api/v1/auth/reset-password",
      *     tags={"Authentication"},
      *     summary="Reset user password",
      *     description="Reset the user's password",
@@ -180,7 +180,7 @@ class AuthController extends Controller
 
     /**
  * @OA\Post(
- *     path="/api/logout",
+ *     path="/api/v1/logout",
  *     tags={"Authentication"},
  *     summary="Log out the current user",
  *     description="Invalidate the user's authentication token",

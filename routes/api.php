@@ -21,18 +21,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('auth')->group(function () {
+Route::prefix('v1/auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
-Route::middleware(['auth:sanctum'])->group(function () {
+
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::get('/articles/{article}', [ArticleController::class, 'show']);
     Route::get('/articles/search', [ArticleController::class, 'search']);
-
-    // Route::get('/fetchArticle', [ArticleController::class, 'fetchArticlesFromAPI']);
 
     Route::get('/preferences', [UserPreferenceController::class, 'index'])->middleware('throttle:30,1');
     Route::post('/preferences', [UserPreferenceController::class, 'store']);
@@ -41,5 +40,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/sources', [SourceController::class, 'index']);
     Route::post('/sources', [SourceController::class, 'store']);
 });
+
 
 
