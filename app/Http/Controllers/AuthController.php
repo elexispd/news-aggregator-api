@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class AuthController extends Controller
 {
     use HttpResponses;
@@ -175,28 +177,38 @@ class AuthController extends Controller
         return $this->successResponse('', 'Password reset successfully');
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/auth/logout",
-     *     tags={"Authentication"},
-     *     summary="Log out the current user",
-     *     description="Invalidate the user's authentication token",
-     *     operationId="logout",
-     *     @OA\Response(
-     *         response=200,
-     *         description="User logout successful",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="message", type="string", example="Logged out successfully")
-     *         )
-     *     )
-     * )
-     */
 
-    public function logout(Request $request) {
-        $request->user()->currentAccessToken()->delete();
+    /**
+ * @OA\Post(
+ *     path="/api/logout",
+ *     tags={"Authentication"},
+ *     summary="Log out the current user",
+ *     description="Invalidate the user's authentication token",
+ *     operationId="logout",
+ *     security={{"sanctum": {}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="User logout successful",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Logged out successfully")
+ *         )
+ *     )
+ * )
+ */
+
+ public function logout(Request $request) {
+    $user = $request->user();  // Get the authenticated user
+
+    if ($user) {
+        $user->currentAccessToken()->delete();
         return $this->successResponse('', 'Logged out successfully');
+    } else {
+        // If no user is authenticated, return an error response
+        return $this->errorResponse('User not authenticated', 401);
     }
+}
+
 
 
 

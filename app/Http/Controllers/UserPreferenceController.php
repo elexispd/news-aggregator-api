@@ -26,12 +26,6 @@ class UserPreferenceController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful retrieval of user preferences",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="categories", type="array", items=@OA\Items(type="string")),
-     *             @OA\Property(property="sources", type="array", items=@OA\Items(type="string")),
-     *             @OA\Property(property="authors", type="array", items=@OA\Items(type="string"))
-     *         )
      *     ),
      *     @OA\Response(
      *         response=401,
