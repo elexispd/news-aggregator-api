@@ -94,6 +94,7 @@ class UserPreferenceController extends Controller
             ]
         );
 
+
         return $this->successResponse($preferences, 'preferences Output');
     }
 
@@ -134,7 +135,7 @@ class UserPreferenceController extends Controller
         $preferences = auth()->user()->preferences;
 
         if (!$preferences) {
-            return response()->json(['message' => 'No preferences set.'], 200);
+            return $this->errorResponse('', 'No preferences set', 404);
         }
 
         // Build a unique cache key based on user ID and preferences
@@ -165,7 +166,7 @@ class UserPreferenceController extends Controller
             return $query->paginate(10);
         });
 
-        return response()->json($articles, 200);
+        return $this->successResponse($articles, 'Feed');
     }
 
 

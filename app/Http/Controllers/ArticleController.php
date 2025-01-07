@@ -63,7 +63,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
          $perPage = $request->input('per_page', 10);
          $page = $request->input('page', 1);
          $articles = Article::paginate($perPage, ['*'], 'page', $page);
-         return response()->json($articles);
+         return $this->successResponse($articles, 'Articles Output');
      }
 
 
@@ -102,7 +102,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
             $article = Article::findOrFail($id);  // This will throw ModelNotFoundException if not found
             return response()->json($article);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Article not found'], 404);  // Custom 404 message
+            return $this->errorResponse('', 'Article not found', 404);
         }
     }
 

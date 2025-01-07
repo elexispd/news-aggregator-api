@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Swagger\SwaggerComponents;
 use App\Http\Requests\StoreUserRequest;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -70,7 +69,7 @@ class AuthController extends Controller
         ]);
         return $this->successResponse([
             'user' => $user,
-            'token' => $user->createToken('authToken'.$user->user)->plainTextToken,
+            'token' => $user->createToken('authToken'.$user->id)->plainTextToken,
 
         ]);
 
